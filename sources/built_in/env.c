@@ -9,6 +9,8 @@ int	take_and_cpy_env(char **env, t_lexer *lexer)
 	int	i;
 	if (!env)
 		return (0);
+	if (lexer->command->state_of_init == 1)
+		return (0);
 	size = 0;
 	i = 0;
 	while (env[size] != NULL)// je prend la taille du tableau pour malloc 
@@ -28,14 +30,14 @@ int	take_and_cpy_env(char **env, t_lexer *lexer)
 	return (1);//si tt est ok
 }
 
-void	built_in_env(char **tab)//la j'affiche juste l'env
+void	built_in_env(t_lexer *lexer)//la j'affiche juste l'env
 {
 	int	i;
 
 	i = 0;
-	while (tab[i] != NULL)
+	while (lexer->command->tab[i] != NULL)
 	{
-		printf("%s\n", tab[i]);
+		printf("%s\n", lexer->command->tab[i]);
 		i++;
 	}
 }

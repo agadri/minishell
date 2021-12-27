@@ -103,6 +103,7 @@ t_command	*init_command_struct(char **str, t_lexer *lexer)
 		i++;
 	lexer->n_command = i ;
 	commands = (t_command *)malloc(sizeof(t_command) * i);
+	lexer->command->state_of_init = 0;
 	i = 0;
 	while (str[i])
 	{

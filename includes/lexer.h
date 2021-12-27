@@ -34,6 +34,7 @@ typedef struct  s_command
 	int				n_token;
 	char			*path;
 	char			**tab;
+	int				state_of_init;
 	int				tab_size;
 }   t_command;
 

@@ -8,7 +8,6 @@ int main(int argc, char **argv, char **env)
 	char **str;
 	char *buff;
 	
-
 	// char *test;
 	printf("env --> %s\n" ,env[0]);
 	while (1)
@@ -33,9 +32,11 @@ int main(int argc, char **argv, char **env)
 			add_history(buff);
 			str = ft_split(buff, '|');
 			lexer = init_lexer(str);
+			
 			take_and_cpy_env(env, lexer);
 			// print_lexer_struct(lexer);
 			exec_command(lexer, env);
+			lexer->command->state_of_init = 1;
 			free(buff);
 			free_double_array(str);
 			free_lexer(lexer);
