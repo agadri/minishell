@@ -35,7 +35,7 @@ void	built_in_export(t_lexer *lexer, char *var)
 		tab[i] = ft_strdup(lexer->command->tab[i]);
 		i++;
 	}
-	tab[i] = ft_strdup(var);//lea je copie la nouvelle variable 
+	tab[i] = ft_strdup(var);//la je copie la nouvelle variable 
 	tab[i + 1] = NULL;
 	if (lexer->command->tab)//jsp si necessaire mais free l'ancien tab
 	{

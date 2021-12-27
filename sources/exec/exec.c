@@ -101,11 +101,11 @@ void	exec_command(t_lexer *lexer, char **env)
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "env"))
 			{
-				built_in_env(lexer);//loraue t'affiche env 3 fois env segfault
+				built_in_env(lexer);
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "pwd"))
 			{
-				built_in_pwd();//meme chose
+				built_in_pwd();
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "export") && lexer->command[i].token[1].data)
 			{
