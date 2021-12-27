@@ -19,7 +19,7 @@ int	is_built_in(char *cmd)//je guete sur quelle commade je tombe
 		if (!ft_strcmp(tab[i], cmd))//dans le cas ou cela ne correspond a aucun cas ...
 			return (1);
 		i++;
-	}//ici sa merder
+	}
 	return (0);
 }
 
