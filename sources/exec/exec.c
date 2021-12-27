@@ -81,12 +81,15 @@ void	exec_command(t_lexer *lexer, char **env)
 		i++;
 	}
 	i = 0;
+	printf("1\n");
 	while (i < lexer->n_command)
 	{
-		if (is_built_in(lexer->command[i].token[0].data))
+		printf("2\n");
+		//printf("return %d\n", is_built_in(lexer->command[i].token[0].data));
+		if (is_built_in(lexer->command[i].token[0].data) == 1)
 		{
 			printf("ICI\n");
-			
+			printf("3\n");
 			//printf("token 0%s\n", lexer->command[i].token[0].data);//echo
 			if (!ft_strcmp(lexer->command[i].token[0].data, "echo"))
 			{

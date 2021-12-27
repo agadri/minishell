@@ -4,34 +4,22 @@
 
 int	is_built_in(char *cmd)//je guete sur quelle commade je tombe 
 {
-	char	*tab[] = {"echo", "cd", "pwd", "export", "unset", "env","exit"};
+	printf("11\n");
+	char	*tab[] = {"echo", "cd", "pwd", "export", "unset", "env","exit", NULL};
 	int	i;
 
 	i = 0;
+	printf("22\n");
+	if (!cmd)
+		return (2);
+	printf("33\n");
 	while (tab[i]) 
 	{
+		printf("44\n");
 		if (!ft_strcmp(tab[i], cmd))//dans le cas ou cela ne correspond a aucun cas ...
 			return (1);
 		i++;
-	}
+	}//ici sa merder
 	return (0);
 }
 
-void	built_in(char *cmd, t_lexer *lexer)
-{
-	(void)lexer;
-	//if (!strcmp(cmd, "echo"))
-	//	built_in_echo();
-	//if (!strcmp(cmd, "cd"))
-	//	built_in_cd();
-	//if (!strcmp(cmd, "pwd"))
-	//	built_in_pwd();
-	//if (!strcmp(cmd, "export"))
-	//	built_in_export();
-	//if (!strcmp(cmd, "unset"))
-	//	built_in_unset();
-	//if (!strcmp(cmd, "env"))
-	//	built_in_env();
-	if (!strcmp(cmd, "exit"))
-		exit(0);
-}
