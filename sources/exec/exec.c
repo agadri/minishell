@@ -103,6 +103,10 @@ void	exec_command(t_lexer *lexer, char **env)
 			{
 				built_in_env(lexer);
 			}
+			if (!ft_strcmp(lexer->command[i].token[0].data, "cd"))
+			{
+				built_in_cd(lexer->command[i].token[1].data);
+			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "pwd"))
 			{
 				built_in_pwd();
