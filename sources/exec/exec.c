@@ -81,16 +81,10 @@ void	exec_command(t_lexer *lexer, char **env)
 		i++;
 	}
 	i = 0;
-	printf("1\n");
 	while (i < lexer->n_command)
 	{
-		printf("2\n");
-		//printf("return %d\n", is_built_in(lexer->command[i].token[0].data));
 		if (is_built_in(lexer->command[i].token[0].data) == 1)
 		{
-			printf("ICI\n");
-			printf("3\n");
-			//printf("token 0%s\n", lexer->command[i].token[0].data);//echo
 			if (!ft_strcmp(lexer->command[i].token[0].data, "echo"))
 			{
 				//si il y a -n en position 1 et quelque chose en 2 printf de se au'il y a en [2]
@@ -105,11 +99,11 @@ void	exec_command(t_lexer *lexer, char **env)
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "cd"))
 			{
-				built_in_cd(lexer->command[i].token[1].data);
+				built_in_cd(lexer, lexer->command[i].token[1].data);
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "pwd"))
 			{
-				built_in_pwd();
+				built_in_pwd(lexer);
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "export") && lexer->command[i].token[1].data)
 			{

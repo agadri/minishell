@@ -19,6 +19,12 @@ typedef struct s_norme
 	int temp;
 }	t_norme;
 
+typedef struct s_tab
+{
+	char	*args;
+	char	*val;
+}	t_tab;
+
 typedef struct  s_token
 {
     char        	*data;
@@ -33,8 +39,10 @@ typedef struct  s_command
 	char 			**args;
 	int				n_token;
 	char			*path;
-	char			**tab;
-	int				state_of_init;
+	t_tab			**tab;
+	char			*pwd;
+	char			*oldpwd;
+	char			*home;
 	int				tab_size;
 }   t_command;
 
@@ -43,9 +51,10 @@ typedef struct s_lexer
 {
 	t_command		*command;
 	int				n_command;
+	int				state_of_init;
 }   t_lexer;
 
-t_lexer		*init_lexer(char **str);
+void		*init_lexer(t_lexer **lexer, char **str);
 t_command	*init_command_struct(char **str, t_lexer *lexer);
 void		get_args(t_command *command);
 void		init_token(char *str, t_command *commands);

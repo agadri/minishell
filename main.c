@@ -4,12 +4,11 @@ int main(int argc, char **argv, char **env)
 {
 	(void)argc;
 	(void)argv;
-	t_lexer *lexer;
+	static t_lexer *lexer = NULL;
 	char **str;
 	char *buff;
-	
-	// char *test;
-	printf("env --> %s\n" ,env[0]);
+
+	//printf("env --> %s\n" ,env[0]);
 	while (1)
 	{
 		// buff = add_space_between_redir(readline("Solo_Minishell> "));
@@ -31,12 +30,14 @@ int main(int argc, char **argv, char **env)
 			buff = add_space_between_redir(buff);
 			add_history(buff);
 			str = ft_split(buff, '|');
-			lexer = init_lexer(str);
-			
+			if (init_lexer(&lexer, str) == NULL)
+				return (1); // free balbalb
 			take_and_cpy_env(env, lexer);
+			lexer->state_of_init = 1;
+			printf("1STAT %d\n",lexer->state_of_init);
 			// print_lexer_struct(lexer);
 			exec_command(lexer, env);
-			lexer->command->state_of_init = 1;
+			
 			free(buff);
 			free_double_array(str);
 			free_lexer(lexer);

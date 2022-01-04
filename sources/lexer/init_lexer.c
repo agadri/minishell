@@ -102,8 +102,8 @@ t_command	*init_command_struct(char **str, t_lexer *lexer)
 	while (str[i] != NULL)
 		i++;
 	lexer->n_command = i ;
+	// lexer->state_of_init = 0;
 	commands = (t_command *)malloc(sizeof(t_command) * i);
-	
 	i = 0;
 	while (str[i])
 	{
@@ -114,19 +114,22 @@ t_command	*init_command_struct(char **str, t_lexer *lexer)
 		get_args(&commands[i]);
 		i++;
 	}
-	lexer->command->state_of_init = 0;
+	//if (!lexer->command->state_of_init)
+	//	lexer->command->state_of_init = 0;
 	return (commands);
 }
 
 
-t_lexer	*init_lexer(char **str)
+void *init_lexer(t_lexer **lexer, char **str)
 {
-	t_lexer *lexer;
-
-	lexer = (t_lexer *)malloc(sizeof(t_lexer));
-	if (!lexer)
-		return (NULL);
-	lexer->command = init_command_struct(str, lexer);
-	return (lexer);
+	if (*lexer == NULL) 
+	{
+		*lexer = (t_lexer *)malloc(sizeof(t_lexer));
+		(*lexer)->state_of_init = 0;
+		if (!*lexer)
+			return (NULL);
+	}
+	(*lexer)->command = init_command_struct(str, *lexer);
+	return *lexer;
 }
 

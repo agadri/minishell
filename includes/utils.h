@@ -2,7 +2,7 @@
 #define UTILS_H
 
 char	**ft_split(char *s, char c);
-char	*ft_strdup(const char *str);
+char	*ft_strdup(char *str);
 char    *remove_space(char *str);
 char	*ft_cpy(char *s, char c);
 int     ft_strlen(char *str);
