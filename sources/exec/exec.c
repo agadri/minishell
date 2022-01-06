@@ -57,7 +57,7 @@ void	ft_putstr_fd(char *str, int fd)
 	write(fd, str, ft_strlen(str));
 }
 
-void	exec_command(t_lexer *lexer, char **env)
+void	exec_command(t_env *envi, t_lexer *lexer, char **env)
 {
  	int		i;
 	int		fd[2048][2];// 0 READ |||| 1 WRITE
@@ -95,23 +95,24 @@ void	exec_command(t_lexer *lexer, char **env)
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "env"))
 			{
-				built_in_env(lexer);
+				built_in_env(envi, lexer);
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "cd"))
 			{
-				built_in_cd(lexer, lexer->command[i].token[1].data);
+				built_in_cd(envi, lexer, lexer->command[i].token[1].data);
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "pwd"))
 			{
-				built_in_pwd(lexer);
+				printf_pwd(envi, lexer);
+				//built_in_pwd(envi, lexer);
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "export") && lexer->command[i].token[1].data)
 			{
-				built_in_export(lexer, lexer->command[i].token[1].data);
+				built_in_export(envi, lexer, lexer->command[i].token[1].data);
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "unset") && lexer->command[i].token[1].data)
 			{
-				built_in_unset(lexer, lexer->command[i].token[1].data);
+				built_in_unset(envi, lexer, lexer->command[i].token[1].data);
 			}
 			/////////////////////////////////////////////////////
 		}

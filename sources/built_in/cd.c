@@ -3,12 +3,13 @@
 
 /* ==== CD === */
 
-void	built_in_cd(t_lexer *lexer, char *path)//chdir?? man
+void	built_in_cd(t_env *env, t_lexer *lexer, char *path)//chdir?? man
 {
-	lexer->command->oldpwd = ft_strdup(lexer->command->pwd);
-	if (!path && lexer->command->home)
+	(void)lexer;
+	env->oldpwd = ft_strdup(env->pwd);
+	if (!path && env->home)
 	{
-		chdir(lexer->command->home);
+		chdir(env->home);
 	}
 	else if (chdir(path) == -1)//chdir permet de redefinir le chemin si path == ".." le chemin rendu recule
 		printf("chdir()\n	");

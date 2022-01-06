@@ -16,29 +16,28 @@ char *ft_strcpy(char *src, char *dest)
 	return (dest);
 }
 
-void	built_in_export(t_lexer *lexer, char *var)
+void	built_in_export(t_env *env, t_lexer *lexer, char *var)
 {
 	int	i;
-	t_tab 	**tab;
+	int	size;
+	t_tab	**tab;
 
-	i = 0;
-	//taille 
-	while (lexer->command->tab[i])
-		i++;
-	lexer->command->tab_size = i + 1;//nouvelle taille de tab;
-	tab = malloc(sizeof(t_tab *) * lexer->command->tab_size + 2);//malloc tab avec sa nouvelle taille 
-	if (!tab)//petite secu des familles
+	(void)lexer;
+	size = 0;
+	while (env->tab[size])
+		size++; 
+	env->tab_size = size + 1;
+	tab = malloc(sizeof(t_tab *) * (env->tab_size + 1));
+	if (!tab)
 		return ;
 	i = 0;
-	// la je copie et malloc (realloc) dans tab;
-	while (lexer->command->tab[i])
+	while (env->tab[i])
 	{
 		tab[i] = malloc(sizeof(t_tab) * 1);
 		if (!tab[i])
 			return ;
-		tab[i]->args = ft_strdup(lexer->command->tab[i]->args);
-		tab[i]->val = ft_strdup(lexer->command->tab[i]->val);
-		//printf("env[%d] :%s %s\n", i,lexer->command->tab[i]->args,lexer->command->tab[i]->val);
+		tab[i]->args = ft_strdup(env->tab[i]->args);
+		tab[i]->val = ft_strdup(env->tab[i]->val);
 		i++;
 	}
 	tab[i] = malloc(sizeof(t_tab) * 1);//args et val
@@ -50,25 +49,26 @@ void	built_in_export(t_lexer *lexer, char *var)
 	tab[i + 1]->args = NULL;
 	tab[i + 1]->val = NULL;
 	i = 0;
-	while (lexer->command->tab[i])//free l'ancien tab
+	while (env->tab[i])//free l'ancien tab
 	{
-		lexer->command->tab[i] = NULL;//NULL et free sur l'ancien tab
-		free(lexer->command->tab[i]);
+		free(env->tab[i]);
+		env->tab[i] = NULL;//NULL et free sur l'ancien tab
 		i++;
 	}
-	lexer->command->tab = NULL;
-	free(lexer->command->tab);
-	lexer->command->tab = malloc(sizeof(t_tab *) * lexer->command->tab_size + 2);// je le remalloc
-	if (!lexer->command->tab)
+	env->tab = NULL;
+	free(env->tab);
+	env->tab = malloc(sizeof(t_tab *) * (env->tab_size + 1));// je le remalloc
+	if (!env->tab)
 		return ;
+	env->tab[env->tab_size] = NULL;
 	i = 0;
-	while (tab[i]->args)// et recopie dedans bam;
+	while (tab[i]->args != NULL)// et recopie dedans bam;
 	{
-		lexer->command->tab[i] = malloc(sizeof(t_tab) * 1);
-		if (!lexer->command->tab[i])
+		env->tab[i] = malloc(sizeof(t_tab) * 1);
+		if (!env->tab[i])
 			return ;
-		lexer->command->tab[i]->args = ft_strdup(tab[i]->args);
-		lexer->command->tab[i]->val = ft_strdup(tab[i]->val);
+		env->tab[i]->args = ft_strdup(tab[i]->args);
+		env->tab[i]->val = ft_strdup(tab[i]->val);
 		i++;
 	}
 }

@@ -34,9 +34,13 @@ char	*ft_argsdup(char *str)
 
 	i = 0;
 	len = 0;
-	while (str[len] && str[len] != '=')
+	if (!str)
+		return (NULL);
+	//printf("argstr %s\n",str);
+	while (str[len] && str[len] != '=')//
 		len++;
 	dup = (char *)malloc(sizeof(char) * (len + 1));
+	//printf("adreess %p\n", dup);
 	if (dup == NULL)
 		return (NULL);
 	while (str[i] && str[i] != '=')
@@ -58,6 +62,7 @@ char	*ft_valdup(char *str)
 	i = 0;
 	j = 0;
 	len = 0;
+	//printf("valstr %s\n",str);
 	while (str[len] && str[len] != '=')
 	{	
 		len++;
@@ -71,11 +76,10 @@ char	*ft_valdup(char *str)
 		len++;
 		i++;
 	}
-	dup = (char *)malloc(sizeof(char) * (i + 2));
+	dup = (char *)malloc(sizeof(char) * (i + 1));
 	if (dup == NULL)
 		return (NULL);
 	i = 0;
-
 	while (str[j])
 	{
 		dup[i] = str[j];

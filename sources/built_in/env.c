@@ -4,61 +4,71 @@
 // pour pouvoir y avoir acces plus tars et je l'affiche ..
 //SHLVL
 
-int	take_and_cpy_env(char **env, t_lexer *lexer)
+int	sizetab(char **tab)
 {
+	int	i;
 
+	i = 0;
+	if (!tab)
+		return (0);
+	while (tab[i])
+		i++;
+	return (i);
+}
+
+int	take_and_cpy_env(t_env *envi, char **env, t_lexer *lexer)
+{
 	int	size;
 	int	i;
 	if (!env)
 		return (0);
 	if (lexer->state_of_init == 1)
 		return (0);
-	size = 0;
-	i = 0;
-	while (env[size] != NULL)// je prend la taille du tableau pour malloc 
-		size++;
-	lexer->command->tab_size = size;
-	lexer->command->tab = malloc(sizeof(t_tab *) * (size + 1));
-	if (!lexer->command->tab)
+	size = sizetab(env);
+	envi->tab_size = size;
+//	printf("%d\n", size);
+	envi->tab = malloc(sizeof(t_tab *) * (size + 1));
+	if (!envi->tab)
 		return (0);
-	lexer->command->tab[size] = NULL;
-	while (env[i])
+	i = 0;
+	while (i < size)
 	{
-		lexer->command->tab[i] = malloc(sizeof(t_tab));
-		if (!lexer->command->tab[i])
+		envi->tab[i] = malloc(sizeof(t_tab));
+		if (!envi->tab[i])
 			return (0);
-		
-		lexer->command->tab[i]->args = ft_argsdup(env[i]);// je copie tt en mallocant dans le tableau
-		lexer->command->tab[i]->val = ft_valdup(env[i]);
-		if (!ft_strcmp(lexer->command->tab[i]->args,"HOME"))
-			lexer->command->home = ft_valdup(env[i]);
-		if (!ft_strcmp(lexer->command->tab[i]->args,"OLDPWD"))
-			lexer->command->oldpwd = ft_valdup(env[i]);
+		envi->tab[i]->args = ft_argsdup(env[i]);
+		envi->tab[i]->val = ft_valdup(env[i]);
+		if (!ft_strcmp(envi->tab[i]->args,"HOME"))
+			envi->home = ft_strdup(envi->tab[i]->val);
+		else if (!ft_strcmp(envi->tab[i]->args,"OLDPWD"))
+			envi->oldpwd = ft_strdup(envi->tab[i]->val);
 		i++;
 	}
-	return (1);//si tt est ok
+	envi->tab[i] = NULL;
+	
+	//envi->tab[i]->args = NULL;
+	//envi->tab[i]->val = NULL;
+	return (1);
 }
 
-void	built_in_env(t_lexer *lexer)//la j'affiche juste l'env
+void	built_in_env(t_env *env, t_lexer *lexer)//la j'affiche juste l'env
 {
 	int		i;
 
 	i = 0;
-	while (lexer->command->tab[i])
+	while (i < env->tab_size)
 	{
-		if (!ft_strcmp(lexer->command->tab[i]->args,"PWD"))//affiche pwd actuel
+		if (!ft_strcmp(env->tab[i]->args,"PWD"))//affiche pwd actuel//segfaut askip
 		{
-			printf("env[%d] :%s=%s\n", i,lexer->command->tab[i]->args, built_in_pwd(lexer));
-			i++;
+			env->pwd = built_in_pwd(env, lexer);
+			printf("env[%d] :%s=%s\n", i,env->tab[i]->args, env->pwd);
 		}
-		else if (!ft_strcmp(lexer->command->tab[i]->args,"OLDPWD"))//l'ancien
+		else if (!ft_strcmp(env->tab[i]->args,"OLDPWD"))//l'ancien
 		{
-			printf("env[%d] :%s=%s\n", i, lexer->command->tab[i]->args,lexer->command->oldpwd);
-			i++;//probleme passe un i a voir
+			printf("env[%d] :%s=%s\n", i, env->tab[i]->args,env->oldpwd);
 		}
 		else
-			printf("env[%d] :%s=%s\n", i,lexer->command->tab[i]->args,lexer->command->tab[i]->val);
+			printf("env[%d] :%s=%s\n", i,env->tab[i]->args,env->tab[i]->val);
 		i++;
 	}
 }
-

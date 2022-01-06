@@ -32,6 +32,8 @@ typedef struct  s_token
     int        		type;
 }   t_token;
 
+
+
 typedef struct  s_command
 {
 	char			*command;
@@ -39,11 +41,7 @@ typedef struct  s_command
 	char 			**args;
 	int				n_token;
 	char			*path;
-	t_tab			**tab;
-	char			*pwd;
-	char			*oldpwd;
-	char			*home;
-	int				tab_size;
+
 }   t_command;
 
 
@@ -53,6 +51,16 @@ typedef struct s_lexer
 	int				n_command;
 	int				state_of_init;
 }   t_lexer;
+
+typedef struct  s_env
+{
+	t_tab			**tab;
+	char			*pwd;
+	char			*oldpwd;
+	char			*home;
+	int				tab_size;
+
+}	t_env;
 
 void		*init_lexer(t_lexer **lexer, char **str);
 t_command	*init_command_struct(char **str, t_lexer *lexer);
