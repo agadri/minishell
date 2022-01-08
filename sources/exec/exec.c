@@ -94,27 +94,15 @@ void	exec_command(t_env *envi, t_lexer *lexer, char **env)
 					printf("cas 2 %s\n", lexer->command[i].token[1].data);
 			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "env"))
-			{
 				built_in_env(envi, lexer);
-			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "cd"))
-			{
 				built_in_cd(envi, lexer, lexer->command[i].token[1].data);
-			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "pwd"))
-			{
 				printf_pwd(envi, lexer);
-				//built_in_pwd(envi, lexer);
-			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "export") && lexer->command[i].token[1].data)
-			{
 				built_in_export(envi, lexer, lexer->command[i].token[1].data);
-			}
 			if (!ft_strcmp(lexer->command[i].token[0].data, "unset") && lexer->command[i].token[1].data)
-			{
 				built_in_unset(envi, lexer, lexer->command[i].token[1].data);
-			}
-			/////////////////////////////////////////////////////
 		}
 		else
 		{

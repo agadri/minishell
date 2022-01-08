@@ -17,5 +17,6 @@ void	printf_pwd(t_env *env, t_lexer *lexer);
 int		ft_strcmp(char *s1, char *s2);
 int		del_var(char **tab, char *var);
 int		built_in_unset(t_env *envi, t_lexer *lexer, char *var);
+void	free_env(t_env *env);
 
 #endif

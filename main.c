@@ -1,5 +1,20 @@
 #include "includes/minishell.h"
 
+void	receive(int sig, siginfo_t *info, void *envi)
+{
+	(void)sig, (void)info;
+	t_env *env;
+	env = (t_env *)envi;
+	(void)env;
+	printf("i get %d\n", sig);
+	if (sig == 2)//si ctr c
+	{
+		//printf("%s\n" , env->pwd);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+	}
+}
 
 int	init_tab(t_env **envi)
 {
@@ -20,14 +35,18 @@ int main(int argc, char **argv, char **env)
 	(void)argv;
 	static t_lexer *lexer = NULL;
 	t_env *envi = NULL;
+	struct sigaction	sig;
 	char **str;
 	char *buff;
 
 	if (!init_tab(&envi))
 		return (0);
-	signal(SIGINT, ctrl_c_handler);
-	signal(SIGTSTP, ctrl_z_handler);
-	signal(SIGQUIT, ctrl_s_handler);
+	memset(&sig, 0, sizeof(sig));
+	sig.sa_flags = SA_SIGINFO;
+	sig.sa_sigaction = &receive;
+	sigaction(SIGINT, &sig, NULL);//ctrl c raffiche une ligne vide ..
+	sigaction(SIGTSTP, &sig, NULL);//ctrl d quit le prgrm
+	sigaction(SIGQUIT, &sig, NULL);//ctrl / fait rien 
 	while (1)
 	{
 		buff = readline("Solo_Minishell> ");
@@ -53,6 +72,7 @@ int main(int argc, char **argv, char **env)
 			free(buff);
 			free_double_array(str);
 			free_lexer(lexer);
+			free_env(envi);
 		}
 	}
 	return (0);

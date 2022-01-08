@@ -26,7 +26,6 @@ int	take_and_cpy_env(t_env *envi, char **env, t_lexer *lexer)
 		return (0);
 	size = sizetab(env);
 	envi->tab_size = size;
-//	printf("%d\n", size);
 	envi->tab = malloc(sizeof(t_tab *) * (size + 1));
 	if (!envi->tab)
 		return (0);
@@ -45,9 +44,6 @@ int	take_and_cpy_env(t_env *envi, char **env, t_lexer *lexer)
 		i++;
 	}
 	envi->tab[i] = NULL;
-	
-	//envi->tab[i]->args = NULL;
-	//envi->tab[i]->val = NULL;
 	return (1);
 }
 
@@ -69,6 +65,23 @@ void	built_in_env(t_env *env, t_lexer *lexer)//la j'affiche juste l'env
 		}
 		else
 			printf("env[%d] :%s=%s\n", i,env->tab[i]->args,env->tab[i]->val);
+		i++;
+	}
+}
+
+void	free_env(t_env *env)
+{
+	int	i;
+
+	i = 0;
+	while (i < env->tab_size)
+	{
+		if (env->tab[i]->args)
+			free (env->tab[i]->args);
+		else if (env->tab[i]->val)
+			free (env->tab[i]->val);
+		else if (env->tab[i])
+			free (env->tab[i]);
 		i++;
 	}
 }

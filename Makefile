@@ -23,8 +23,7 @@ SRCS	=	main.c \
 
 OBJS	=	${SRCS:.c=.o}
 
-CC		=	gcc -Wall -Werror -Wextra -g
-#-fsanitize=address
+CC		=	gcc -Wall -Werror -Wextra -g -fsanitize=leak
 RM		=	rm -f
 NAME	=	minishell
 

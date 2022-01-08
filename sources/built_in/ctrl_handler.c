@@ -31,7 +31,7 @@ void	ctrl_c_handler(int	sig)
 	exit(0);
 }
 
-void	ctrl_z_handler(int	sig)
+void	ctrl_d_handler(int	sig)
 {
 	(void)sig;
 	printf("ZZZZZZZ\n");
