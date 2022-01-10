@@ -35,10 +35,10 @@ int	ft_strlen(char *str)
 
 char   *remove_space(char *str)
 {
-	int     i;
-	int     j;
-	int     len;
-	char    *dest;
+	int		i;
+	int		j;
+	int		len;
+	char	*dest;
 
 	len = ft_strlen(str);
 	if (str[len - 1] == ' ')

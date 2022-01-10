@@ -85,6 +85,7 @@ void	exec_command(t_env *envi, t_lexer *lexer, char **env)
 	{
 		if (is_built_in(lexer->command[i].token[0].data) == 1)
 		{
+			//printf("1i = %d %s %s\n", i, lexer->command[i].token[0].data, lexer->command[i].token[1].data);
 			if (!ft_strcmp(lexer->command[i].token[0].data, "echo"))
 			{
 				//si il y a -n en position 1 et quelque chose en 2 printf de se au'il y a en [2]
@@ -93,16 +94,23 @@ void	exec_command(t_env *envi, t_lexer *lexer, char **env)
 				else if (lexer->command[i].token[1].data)// sinon print avec '\n'
 					printf("cas 2 %s\n", lexer->command[i].token[1].data);
 			}
-			if (!ft_strcmp(lexer->command[i].token[0].data, "env"))
+			else if (!ft_strcmp(lexer->command[i].token[0].data, "env"))
 				built_in_env(envi, lexer);
-			if (!ft_strcmp(lexer->command[i].token[0].data, "cd"))
+			else if (!ft_strcmp(lexer->command[i].token[0].data, "cd"))
 				built_in_cd(envi, lexer, lexer->command[i].token[1].data);
-			if (!ft_strcmp(lexer->command[i].token[0].data, "pwd"))
+			else if (!ft_strcmp(lexer->command[i].token[0].data, "pwd"))
 				printf_pwd(envi, lexer);
-			if (!ft_strcmp(lexer->command[i].token[0].data, "export") && lexer->command[i].token[1].data)
+			else if (!ft_strcmp(lexer->command[i].token[0].data, "export") && lexer->command[i].token[1].data)
 				built_in_export(envi, lexer, lexer->command[i].token[1].data);
-			if (!ft_strcmp(lexer->command[i].token[0].data, "unset") && lexer->command[i].token[1].data)
+			else if (!ft_strcmp(lexer->command[i].token[0].data, "unset") && lexer->command[i].token[1].data)
 				built_in_unset(envi, lexer, lexer->command[i].token[1].data);
+			else if (!ft_strcmp(lexer->command[i].token[0].data, "exit") && !lexer->command[i].token[1].data)
+				printf("aaaahhah\n");
+			else if (!ft_strcmp(lexer->command[i].token[0].data, "exit") && lexer->command[i].token[1].data)
+			{
+				printf("111 |%s| |%s|\n", lexer->command[i].token[0].data, lexer->command[i].token[1].data);
+				built_in_exit(lexer, envi, i);
+			}
 		}
 		else
 		{

@@ -19,7 +19,8 @@ SRCS	=	main.c \
 			./sources/built_in/pwd.c \
 			./sources/built_in/unset.c \
 			./sources/built_in/utils_built_in.c \
-			./sources/built_in/ctrl_handler.c
+			./sources/built_in/ctrl_handler.c \
+			./sources/built_in/exit.c
 
 OBJS	=	${SRCS:.c=.o}
 
