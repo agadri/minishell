@@ -85,14 +85,25 @@ void	exec_command(t_env *envi, t_lexer *lexer, char **env)
 	{
 		if (is_built_in(lexer->command[i].token[0].data) == 1)
 		{
-			//printf("1i = %d %s %s\n", i, lexer->command[i].token[0].data, lexer->command[i].token[1].data);
 			if (!ft_strcmp(lexer->command[i].token[0].data, "echo"))
 			{
-				//si il y a -n en position 1 et quelque chose en 2 printf de se au'il y a en [2]
 				if(!ft_strcmp(lexer->command[i].token[1].data, "-n"))
-					printf("cas 1 %s", lexer->command[i].token[2].data);
-				else if (lexer->command[i].token[1].data)// sinon print avec '\n'
-					printf("cas 2 %s\n", lexer->command[i].token[1].data);
+					printf("%s", lexer->command[i].token[2].data);
+				if (lexer->command[i].token[1].data[0] == '$')
+				{
+					int j;
+
+					j = 0;
+					while (j < envi->tab_size)
+					{
+						if (ft_strcmp(lexer->command[i].token[1].data, envi->tab[j]->args))
+							printf("%s\n", envi->tab[j]->val);
+						j++;
+					}
+				}
+				else
+					printf("%s\n", lexer->command[i].token[1].data);
+					
 			}
 			else if (!ft_strcmp(lexer->command[i].token[0].data, "env"))
 				built_in_env(envi, lexer);
