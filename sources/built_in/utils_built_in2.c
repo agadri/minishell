@@ -1,35 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   utils_built_in2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adegadri <adegadri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/14 18:10:00 by adegadri          #+#    #+#             */
-/*   Updated: 2022/02/15 15:44:25 by adegadri         ###   ########.fr       */
+/*   Created: 2022/02/07 19:36:06 by adegadri          #+#    #+#             */
+/*   Updated: 2022/02/08 17:34:44 by adegadri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*built_in_pwd(t_env *env)
+int	sizetab(char **tab)
 {
-	char	cwd[256];
+	int	i;
 
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-	{
-		if (env->pwd)
-		{
-			free(env->pwd);
-			env->pwd = NULL;
-		}
-		env->pwd = ft_strdup(cwd);
-	}
-	return (env->pwd);
+	i = 0;
+	if (!tab)
+		return (0);
+	while (tab[i])
+		i++;
+	return (i);
 }
 
-void	printf_pwd(t_env *env)
+char	*check_env(t_env *envi, char *str)
 {
-	built_in_pwd(env);
-	printf("%s\n", env->pwd);
+	int	i;
+
+	i = 0;
+	while (i < envi->tab_size)
+	{
+		if (ft_strcmp(str, envi->tab[i]->args) == 0)
+			return (envi->tab[i]->val);
+		i++;
+	}
+	return (NULL);
 }

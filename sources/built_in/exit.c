@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adegadri <adegadri@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/14 17:56:28 by adegadri          #+#    #+#             */
+/*   Updated: 2022/02/15 15:55:03 by adegadri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	is_num(char *str)
@@ -18,30 +30,27 @@ int	is_charspe(char *str)
 {
 	int	i;
 
-	i = 0;
-	while (str[i])
+	i = -1;
+	while (str[++i])
 	{
-		if (str[i] == '<' && str[i + 1] != '<')
+		if ((str[i] == '<' && str[i + 1] == '<') || \
+		(str[i] == '>' && str[i + 1] == '>'))
 		{
-			printf("%s\n","bash: syntax error near unexpected token '<'");
+			if (str[i] == '<')
+				printf("%s\n", "bash: syntax error near unexpected token '<<'");
+			else
+				printf("%s\n", "bash: syntax error near unexpected token '>>'");
 			return (1);
 		}
-		else if (str[i] == '>' && str[i + 1] != '>')
+		else if ((str[i] == '<' && str[i + 1] != '<') || \
+		(str[i] == '>' && str[i + 1] != '>'))
 		{
-			printf("%s\n","bash: syntax error near unexpected token '>'");
-			return (1);
+			if (str[i] == '<')
+				printf("%s\n", "bash: syntax error near unexpected token '<'");
+			else
+				printf("%s\n", "bash: syntax error near unexpected token '>'");
+			return (2);
 		}
-		else if (str[i] == '<' && str[i + 1] == '<')
-		{
-			printf("%s\n","bash: syntax error near unexpected token '<<'");
-			return (1);
-		}
-		else if (str[i] == '>' && str[i + 1] == '>')
-		{
-			printf("%s\n","bash: syntax error near unexpected token '>>'");
-			return (1);
-		}
-		i++;
 	}
 	return (0);
 }
@@ -55,12 +64,12 @@ int	is_slash(char *str)
 	{
 		if (str[i] == '/' && str[i + 1] != '/')
 		{
-			printf("%s\n","bash: syntax error near unexpected token '<'");
+			printf("%s\n", "bash: syntax error near unexpected token '<'");
 			return (1);
 		}
 		else if (str[i] == '>' && str[i + 1] != '>')
 		{
-			printf("%s\n","bash: syntax error near unexpected token '>'");
+			printf("%s\n", "bash: syntax error near unexpected token '>'");
 			return (1);
 		}
 		i++;
@@ -68,49 +77,45 @@ int	is_slash(char *str)
 	return (0);
 }
 
-void	built_in_exit(t_lexer *lexer, t_env *env, int i)
+void	built_in_exit(t_lexer *lexer, t_free *struct_free, \
+int (*fd)[2048][2], t_env *envi)
+{	
+	if (exit_status(lexer) == 1)
+	{
+		close_fds(fd, lexer->n_command);
+		free_lexer(lexer);
+		free(struct_free->buff);
+		free(struct_free->id_fork);
+		free(struct_free->str);
+		free_env(envi);
+		exit (g_exit);
+	}
+}
+
+int	exit_status(t_lexer *lexer)
 {
-	//1
-	//exit sans rien quit
-	(void)env;
-	printf("ii %d\n", i);
-	if (i >= 2)
-		printf("bash: exit: too many arguments\n");
-	else if (lexer->command[i].token[0].data && !lexer->command[i].token[1].data)
-		exit(EXIT_SUCCESS);
-	else if (lexer->command[i].token[0].data && lexer->command[i].token[1].data)
+	if (lexer->command[0].n_token > 1
+		&& !is_str_num(lexer->command[0].token[1].data))
 	{
-		int	nbr;
-		if (is_charspe(lexer->command[i].token[1].data))
-			printf("ah\n");
-		else if (is_slash(lexer->command[i].token[1].data))
-			printf("eh\n");
-		else if (!is_num(lexer->command[i].token[1].data))// si ya que des chiffres 
-		{
-			nbr = ft_atoi(lexer->command[i].token[1].data);//convertie en int ;
-			//free_lexer(lexer);
-			//free_env(env);
-			exit(nbr);//exit avec l'int;
-		}
+		g_exit = 2;
+		ft_putstr_error("SoloMinishell: exit: ");
+		ft_putstr_error(lexer->command[0].token[1].data);
+		ft_putstr_error(": numeric argument required\n");
+		return (0);
+	}
+	else if (lexer->command[0].n_token > 2)
+	{
+		ft_putstr_error("SoloMinishell: exit: too many arguments\n");
+		g_exit = 1;
+		return (0);
+	}
+	else if (lexer->command[0].n_token == 2)
+	{
+		g_exit = ft_atoi(lexer->command[0].token[1].data);
+		if (g_exit < 0)
+			g_exit = (g_exit % -256) + 256;
 		else
-			printf("exit: %s : numeric argument required\n", lexer->command[i].token[1].data);//sinon c'est tchao
+			g_exit = g_exit % 256;
 	}
-	else if(!lexer->command[i].token[1].data)
-	{
-		//free_lexer(lexer);
-		//free_env(env);
-		exit(EXIT_SUCCESS);
-	}
-
-	//2
-	//exit exit ->bash: exit: hola: numeric argument required
-	//3
-	//exit "blabla" bash: exit: hola: numeric argument required
-	//4
-	//exit 'nombre' exit normal
-	//5
-	//exit 'nbr' ' nbr' ->bash: exit: hola: numeric argument required
-	//6
-	// exit 'nbr ' * etc -> pareil
-
+	return (1);
 }

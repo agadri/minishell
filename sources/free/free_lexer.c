@@ -1,14 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free_lexer.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sconcy <sconcy@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/06 15:30:02 by sconcy            #+#    #+#             */
+/*   Updated: 2022/02/06 15:33:02 by sconcy           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-void    free_token(t_token *token)
+void	free_token(t_token *token)
 {
 	if (token->data)
 		free (token->data);
 }
 
-void    free_command(t_command *command)
+void	free_command(t_command *command)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (command && i < command->n_token)
@@ -23,13 +35,11 @@ void    free_command(t_command *command)
 		free (command->token);
 	if (command && command->args)
 		free_double_array(command->args);
-	// if (command->path)
-	//     free(command->path);
 }
 
-void    free_lexer(t_lexer *lexer)
+void	free_lexer(t_lexer *lexer)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < lexer->n_command)
@@ -38,5 +48,5 @@ void    free_lexer(t_lexer *lexer)
 		i++;
 	}
 	free (lexer->command);
-	// free (lexer);
+	free (lexer);
 }

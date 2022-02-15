@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adegadri <adegadri@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/06 15:57:23 by sconcy            #+#    #+#             */
+/*   Updated: 2022/02/08 17:35:37 by adegadri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-void clean(char **tab, int size)
+void	clean(char **tab, int size)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < size)
@@ -150,7 +162,6 @@ char	**ft_split(char *s, char c)
 				s++;
 		}
 	}
-//	printf("i : %d\n", i);
 	dest[i] = NULL;
 	return (dest);
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils01.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sconcy <sconcy@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/06 16:00:06 by sconcy            #+#    #+#             */
+/*   Updated: 2022/02/15 13:59:16 by sconcy           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 char	*ft_strdup(char *str)
@@ -7,24 +19,24 @@ char	*ft_strdup(char *str)
 	int		i;
 
 	i = 0;
-	if (!str)
-		return (NULL);
-	len = ft_strlen(str);
+	len = 0;
+	while (str[len])
+		len++;
 	dup = (char *)malloc(sizeof(char) * (len + 1));
-	if (!dup)
+	if (dup == NULL)
 		return (0);
 	while (str[i])
 	{
 		dup[i] = str[i];
 		i++;
 	}
-	dup[i] = '\0';
+	dup[i] = 0;
 	return (dup);
 }
 
 int	ft_strlen(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (str)
@@ -33,7 +45,7 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-char   *remove_space(char *str)
+char	*remove_space(char *str)
 {
 	int		i;
 	int		j;
@@ -66,9 +78,9 @@ char   *remove_space(char *str)
 
 char	*add_space_between_redir(char *str)
 {
-	int     len;
-	char    *dest;
-	int     i;
+	int		len;
+	char	*dest;
+	int		i;
 	int		j;
 
 	i = 0;
@@ -80,7 +92,7 @@ char	*add_space_between_redir(char *str)
 			&& (str[i + 1] == '>' || str[i + 1] == '<'))
 			len++;
 		else if ((str[i] == '>' || str[i] == '<') && (str[i + 1] != '>'
-			&& str[i + 1] != '<' && str[i + 1] != ' '))
+				&& str[i + 1] != '<' && str[i + 1] != ' '))
 			len++;
 		i++;
 	}
@@ -92,19 +104,20 @@ char	*add_space_between_redir(char *str)
 	}
 	while (i < ft_strlen(str))
 	{
-		if ((str[i] != '>' && str[i] != '<') && (str[i + 1] == '>' || str[i + 1] == '<'))
+		if ((str[i] != '>' && str[i] != '<') && (str[i + 1] == '>'
+				|| str[i + 1] == '<'))
 		{
 			dest[j] = str[i];
 			j++;
 			dest[j] = ' ';
 		}
 		else if ((str[i] == '>' || str[i] == '<') && (str[i + 1] != '>'
-			&& str[i + 1] != '<' && str[i + 1] != ' '))
-			{
-				dest[j] = str[i];
-				j++;
-				dest[j] = ' ';
-			}
+				&& str[i + 1] != '<' && str[i + 1] != ' '))
+		{
+			dest[j] = str[i];
+			j++;
+			dest[j] = ' ';
+		}
 		else
 			dest[j] = str[i];
 		i++;
@@ -115,9 +128,9 @@ char	*add_space_between_redir(char *str)
 	return (dest);
 }
 
-void    free_double_array(char **array)
+void	free_double_array(char **array)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (array[i])

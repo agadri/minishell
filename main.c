@@ -1,79 +1,109 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adegadri <adegadri@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/01/14 15:23:11 by adegadri          #+#    #+#             */
+/*   Updated: 2022/02/15 16:21:10 by adegadri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+int g_exit = 0;
+
 #include "includes/minishell.h"
 
-void	receive(int sig, siginfo_t *info, void *envi)
+void	handler_sigint(int signum)
 {
-	(void)sig, (void)info;
-	t_env *env;
-	env = (t_env *)envi;
-	(void)env;
-	printf("i get %d\n", sig);
-	if (sig == 2)//si ctr c
+	if (signum == SIGINT)
 	{
-		//printf("%s\n" , env->pwd);
-		rl_replace_line("", 0);
+		g_exit = 130;
+		write(1, "\n", 1);
 		rl_on_new_line();
 		rl_redisplay();
 	}
+	else
+		return ;
 }
 
-int	init_tab(t_env **envi)
+void	print_lexer_struct(t_lexer *lexer)
 {
-	*envi = malloc(sizeof(t_env));
-	if (!*envi)
+	int i;
+	int j;
+
+	i = 0;
+	printf("NUMBER OF COMMAND	:		%d\n\n\n", lexer->n_command);
+	while (i < lexer->n_command)
+	{
+		j = 0;
+		printf("COMMAND			:		%s\n", lexer->command[i].command);
+		printf("NUMBER OF TOKEN		:		%d\n\n", lexer->command[i].n_token);
+		while (j < lexer->command[i].n_token)
+		{
+			printf("TOKEN			:		%s\n", lexer->command[i].token[j].data);
+			printf("TYPE			:		%d\n\n", lexer->command[i].token[j].type);
+			j++;
+		}
+		printf("\n\n\n\n");
+		i++;
+	}
+}
+
+int	if_main_else(t_env *envi, t_lexer *lexer, char **env, t_free struct_free)
+{
+	struct_free.buff = add_space_between_redir(struct_free.buff);
+	add_history(struct_free.buff);
+	struct_free.str = ft_split(struct_free.buff, '|');
+	take_and_cpy_env(envi, env);
+	envi->state = 1;
+	lexer = init_lexer(struct_free.str, envi);
+	if (!lexer)
+	{
+		free_env(envi);
 		return (0);
-	(*envi)->tab = NULL;
-	(*envi)->pwd = NULL;
-	(*envi)->oldpwd = NULL;
-	(*envi)->home = NULL;
-	(*envi)->tab_size = 0;
+	}
+	exec_command(envi, lexer, env, &struct_free);
+	free(struct_free.buff);
+	free_double_array(struct_free.str);
+	free_lexer(lexer);
+	//free_env(envi);
 	return (1);
 }
 
-int main(int argc, char **argv, char **env)
+int	main(int argc, char **argv, char **env)
 {
+	static t_lexer	*lexer = NULL;
+	t_free			struct_free;
+	t_env			*envi;
+
 	(void)argc;
 	(void)argv;
-	static t_lexer *lexer = NULL;
-	t_env *envi = NULL;
-	struct sigaction	sig;
-	char **str;
-	char *buff;
-
+	(void)env;
 	if (!init_tab(&envi))
 		return (0);
-	memset(&sig, 0, sizeof(sig));
-	sig.sa_flags = SA_SIGINFO;
-	sig.sa_sigaction = &receive;
-	sigaction(SIGINT, &sig, NULL);//ctrl c raffiche une ligne vide ..
-	sigaction(SIGTSTP, &sig, NULL);//ctrl d quit le prgrm
-	sigaction(SIGQUIT, &sig, NULL);//ctrl / fait rien 
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);
+	struct_free.buff = NULL;
+	struct_free.str = NULL;
 	while (1)
 	{
-		buff = readline("Solo_Minishell> ");
-		if (!buff)
+		signal(SIGINT, handler_sigint);
+		struct_free.buff = readline("Solo_Minishell> ");
+		if (!struct_free.buff)
 		{
 			write(1, "exit\n", 5);
-			exit(EXIT_SUCCESS);
+			free_env(envi);
+			exit(g_exit);
 		}
-
-		if (!*buff)
-			free(buff);
+		if (!*struct_free.buff)
+			free(struct_free.buff);
 		else
 		{
-			buff = add_space_between_redir(buff);
-			add_history(buff);
-			str = ft_split(buff, '|');
-			if (init_lexer(&lexer, str) == NULL)
-				return (1);
-			take_and_cpy_env(envi, env, lexer);
-			lexer->state_of_init = 1;
-			printf("1STAT %d\n",lexer->state_of_init);
-			exec_command(envi, lexer, env);
-			free(buff);
-			free_double_array(str);
-			free_lexer(lexer);
-			free_env(envi);
+			if (!if_main_else(envi, lexer, env, struct_free))
+				return (0);
 		}
 	}
+	free_env(envi);
 	return (0);
 }
